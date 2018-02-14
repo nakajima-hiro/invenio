@@ -24,6 +24,6 @@
 
 # Use Elasticsearch 2.
 FROM elasticsearch:2
-COPY scripts/provision-elasticsearch.sh /tmp/
+COPY ./scripts/provision-elasticsearch.sh /tmp/
 # Install Elasticsarch plugins:
 RUN /tmp/provision-elasticsearch.sh

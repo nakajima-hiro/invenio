@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kompose.cmd: /usr/local/bin/kompose --provider openshift --file docker-compose.yml
+      convert
+    kompose.version: 1.8.0 (0c0c027)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: web
+  name: web
+spec:
+  replicas: 1
+  selector:
+    io.kompose.service: web
+  strategy:
+    resources: {}
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: web
+    spec:
+      containers:
+      - args:
+        - /bin/bash
+        - -c
+        - invenio run -h 0.0.0.0
+        env:
+        - name: INVENIO_ELASTICSEARCH_HOST
+          value: elasticsearch
+        - name: INVENIO_POSTGRESQL_DBNAME
+          value: invenio
+        - name: INVENIO_POSTGRESQL_DBPASS
+          value: dbpass123
+        - name: INVENIO_POSTGRESQL_DBUSER
+          value: invenio
+        - name: INVENIO_POSTGRESQL_HOST
+          value: postgresql
+        - name: INVENIO_RABBITMQ_HOST
+          value: rabbitmq
+        - name: INVENIO_REDIS_HOST
+          value: redis
+        - name: INVENIO_USER_EMAIL
+          value: info@inveniosoftware.org
+        - name: INVENIO_USER_PASS
+          value: uspass123
+        - name: INVENIO_WEB_HOST
+          value: 127.0.0.1
+        - name: INVENIO_WEB_INSTANCE
+          value: invenio
+        - name: INVENIO_WEB_VENV
+          value: invenio
+        - name: INVENIO_WORKER_HOST
+          value: 127.0.0.1
+        - name: PATH
+          value: /home/invenio/.virtualenvs/invenio/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+        - name: VIRTUALENVWRAPPER_PYTHON
+          value: /usr/local/bin/python
+        image: ' '
+        name: web
+        ports:
+        - containerPort: 5000
+        resources: {}
+        volumeMounts:
+        - mountPath: /home/invenio/.virtualenvs/invenio/var/instance/static
+          name: static-claim0
+      restartPolicy: Always
+      volumes:
+      - name: static-claim0
+        persistentVolumeClaim:
+          claimName: static-claim0
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - web
+      from:
+        kind: ImageStreamTag
+        name: web:latest
+    type: ImageChange
+status: {}

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: /usr/local/bin/kompose --provider openshift --file docker-compose.yml
+      convert
+    kompose.version: 1.8.0 (0c0c027)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: elasticsearch
+  name: elasticsearch
+spec:
+  ports:
+  - name: "29200"
+    port: 29200
+    targetPort: 9200
+  - name: "29300"
+    port: 29300
+    targetPort: 9300
+  selector:
+    io.kompose.service: elasticsearch
+status:
+  loadBalancer: {}

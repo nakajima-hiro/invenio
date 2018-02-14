@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    io.kompose.service: static
+  name: static
+spec:
+  containers:
+  - image: static
+    name: static
+    resources: {}
+    volumeMounts:
+    - mountPath: /home/invenio/.virtualenvs/invenio/var/instance/static
+      name: static-claim0
+  restartPolicy: Never
+  volumes:
+  - name: static-claim0
+    persistentVolumeClaim:
+      claimName: static-claim0
+status: {}

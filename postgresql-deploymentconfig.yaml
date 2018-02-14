@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    kompose.cmd: /usr/local/bin/kompose --provider openshift --file docker-compose.yml
+      convert
+    kompose.version: 1.8.0 (0c0c027)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: postgresql
+  name: postgresql
+spec:
+  replicas: 1
+  selector:
+    io.kompose.service: postgresql
+  strategy:
+    resources: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: postgresql
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: invenio
+        - name: POSTGRES_PASSWORD
+          value: dbpass123
+        - name: POSTGRES_USER
+          value: invenio
+        image: ' '
+        name: postgresql
+        ports:
+        - containerPort: 5432
+        resources: {}
+      restartPolicy: Always
+  test: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - postgresql
+      from:
+        kind: ImageStreamTag
+        name: postgresql:latest
+    type: ImageChange
+status: {}
